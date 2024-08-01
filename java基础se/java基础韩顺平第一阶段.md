@@ -806,19 +806,551 @@ class Person{
 
 - 封装
 
+  面向对象编程有三大特征：封装、继承和多态.
+
+  封装（encapsulation)就是把抽象出的数据[属性]和对数据的操作【方法】封装在一起，数据被保护在内部，程序的其他部分只有通过被授权的操作【方法】，才能对数据进行操作。
+
+  理解和好处：
+
+  ```java
+  1）隐藏实现细节：方法（连接数据库）<--调用（传入参数。。）
+  2）可以对数据进行验证，保证安全合理
+  Person {name,age}
+  Person p =  new Person();
+  p.name = "jack";
+  p.age = 1200;
+  ```
+
+  实现步骤(三步走)
+
+  >1）将属性进行私有化private【不能直接修改属性】
+  >
+  >2）提供一个公共的（public）set方法，用于对属性判断并赋值
+  >
+  >public void setXXX(类型 参数名){//XXX 表示某个属性
+  >
+  >//加入数据验证的业务逻辑
+  >
+  >属性=参数名；
+  >
+  >}
+  >
+  >3）提供一个公共的（public）get方法，用于获取属性的值
+  >
+  >public 数据类型 getXxx{//权限判断，Xxx某个属性
+  >
+  >return xx;
+  >
+  >}
+
+  入门案例
+
+  ```java
+  public class Test {
+      public static void main(String[] args) {
+          // TODO Auto-generated method stub
+          MyTools mt = new MyTools();
+          mt.setName("jacksss");
+          mt.setAge(18);
+          mt.setSalary(30000);
+          System.out.println(mt.info());
+      }
+  }
+  
+  class MyTools {
+      public String name;
+      private int age;
+      private double salary;
+      //自己写get，set太慢快捷键
+      public MyTools(String name, int age,double salary){
+          //this.name = name;
+         // this.age = age;
+          //this.salary = salary;
+          setName(name);
+          setAge(age);
+          setSalary(salary);
+      }//写构造器就绕过了set方法，解决：写到构造器里
+      public String getName() {
+          return name;
+      }
+  
+      public void setName(String name) {
+          if(name.length()>=2&&name.length()<=6){
+              this.name = name;
+          }else{
+              System.out.println("名字长度不对，需要2-6个字符");
+              this.name = "ss";
+          }
+      }
+  
+      public int getAge() {
+          return age;
+      }
+  
+      public void setAge(int age) {
+          if(age >=1&&age<=120) {
+              this.age = age;
+          }else{
+              System.out.println("你设置的年龄不对，需要在1-120之间");
+              this.age = 18;
+          }
+      }
+  
+      public double getSalary() {
+          return salary;
+      }
+  
+      public void setSalary(double salary) {
+          this.salary = salary;
+      }
+      public String info(){
+          return "信息为 name="+name +" age"+age+" 薪水"+salary;
+      }
+  } //end of class
+  ```
+
+  
+
+  2024.07.25 完成31.378到封装
+
 - 继承
 
-- 多态
+  目的：提高代码复用性,代码的扩展性和维护性提高。
+
+  ![image-20240726163628171](D:/Blog/source/_posts/杂题结论/image-20240726163628171.png)
+
+  ```java
+  语法：
+  class 子类 extends 父类{
+  }
+  1)子类会自动拥有父类定义的属性以及方法；
+  2）父类又叫超类，基类；
+  3）子类又叫派生类。
+  ```
+
+  >继承的深入讨论/细节问题
+  >
+  > 1.子类继承了所有的属性和方法，非私有的属性和方法可以在子类直接访问,但是私有属性和方法不能在子类直接访 问，要通过父类提供公共的方法去访问 
+  >
+  >2.子类必须调用父类的构造器，完成父类的初始化 
+  >
+  >3.当创建子类对象时，不管使用子类的哪个构造器，默认情况下总会去调用父类的无参构造器，如果父类没有提供无参构造器，则必须在子类的构造器中用super去指定使用父类的哪个构造器完成对父类的初始化工作，否则，编译不会通过（怎么理解。）举例说明
+  >
+  >```java
+  >super(参数)父类的
+  >    //
+  >this()指的是在构造器里调用另外一个构造器。自己的
+  >```
+  >
+  >4.如果希望指定去调用父类的某个构造器，则显式的调用一下:super(参数列表) 5. super在使用时，必须放在构造器第一行(super只能在构造器中使用)
+  >
+  >6.super()和this()都只能放在构造器第一行，因此这两个方法不能共存在一个构造器 .
+  >
+  >7.java所有类都是Object类的子类,Object是所有类的基类.
+  >
+  >8.父类构造器的调用不限于直接父类！将一直往上追溯直到Object类(顶级父类) 
+  >
+  >9.子类最多只能继承一个父类(指直接继承)，即java中是单继承机制。 思考：如何让A类继承B类和C类？【A继承B，B继承C】 
+  >
+  >10.不能滥用继承，子类和父类之间必须满足is-a的逻辑关系
+
+  
+
+  super()自动调用父类的无参构造器//没有就是隐含着
+
+  继承的本质：在jvm内存里的调用执行
+
+  ![image-20240727170037955](D:/Blog/source/_posts/杂题结论/image-20240727170037955.png)
+
+  2024.07.26 完成32.637%到继承
 
 - super
 
-- overwrite
+  super代表父类的引用，用于访问父类的属性、方法、构造器.
+
+  > 1.访问父类的属性，但不能访问父类的private属性 super.属性名
+  >
+  > 2.访问父类的方法，不能访问父类的private方法 super.方法名（参数列表）
+  >
+  > 3.访问父类的构造器 super.（参数列表）只能放在第一行
+
+  ![image-20240727004504386](D:/Blog/source/_posts/杂题结论/image-20240727004504386.png)
+
+- override方法重写/覆盖
+
+  简单的说：方法覆盖（重写）就是子类有一个方法，和父类的某个方法的名称，返回类型，参数一样，那么我们就说子类的这个方法覆盖了父类的方法。
+
+  > 注意细节：
+  >
+  > 1.子类的方法的形参列表，方法名称，要和父类方法的形参列表，方法名称完全一样。
+  >
+  > 2.子类方法的返回类型和父类的返回类型一样，或者是父类返回类型的子类。
+  >
+  > 比如 父类 返回类型是Object，子类方法返回类型是String。这是在到顶级父类时
+  >
+  > 3.子类方法不能缩小父类方法的访问权限 public> protected>默认>private;
+
+  ![image-20240727225607080](D:/Blog/source/_posts/杂题结论/image-20240727225607080.png)
+
+  2024.07.27 完成33.516%到override
+
+  
+
+  - 多态polymorphic
+
+  要操作的很多不利于维护和管理，写很多一样的。
+
+  传统的方法带来的问题是什么?
+
+  如何解决? 问题是：代码的复用性不高，而且不利于代码维护
+
+   解决方案：引出我们要讲解的多态
+
+  **方法或对象具有多种形态。是面向对象的第三大特征，多态是建立在封装和继承基础之上的。**
+
+  方法重载和重写体现多态
+
+  ```java
+  Animal animal = new Dog();
+  animal.cry();
+  animal = new  Cat();
+  animal.cry();
+  Cat cat =(Cat)animal;
+  cat instanceof Animal//boolen值
+  ```
+
+  对象的多态：
+
+  > 1.一个对象的编译类型和运行类型可以不一致
+  >
+  > 2.编译类型在定义对象时，就确定了，不能改变
+  >
+  > 3.运行类型是可以变化的 getClass
+  >
+  > 4.编译类型是看定义时 = 号的左边，运行类型看 = 号的右边。就可以变了，关键是减少代码量
+  >
+  > 5.属性没有重写一说就是找编译类型的属性
+  >
+  > 6.instanceof :判断某某对象的运行类型是否为xx类型或xx类型的子类型
+
+  ![image-20240728182035917](D:/Blog/source/_posts/杂题结论/image-20240728182035917.png)
+
+  :star:java的动态绑定机制
+
+  ![image-20240728182140190](D:/Blog/source/_posts/杂题结论/image-20240728182140190.png)
+
+​       DynamicBinding:方法就得调用运行类型的，属性不需要。
+
+多态的应用
+
+多态数组：
+
+数组的定义为父类类型，里面保存的实际元素为子类类型
+
+```java
+Person[] persons = new Person[5];
+persons[0]=new Person();
+persons[1]=new Student();
+persons[2]=new Teacher();
+for(int i=0;i<persons.length;i++){
+    if(persons[i]instanceof Student){//判断运行类型是否为Student
+        Student student=(Student)persons[i];
+        student.study();
+        //((Student)persons[i].study());
+    }
+}
+```
+
+多态参数:
+
+方法定义的形参类型为父类类型，实参类型允许为子类类型
+
+```java
+package com.polyparameter;
+
+public class Ployparameter {
+    public static void main(String []args){
+        Worker tom = new Worker("tom", 2500.0);
+        Manger milan = new Manger("milan", 5000.0,200000);
+        Ployparameter ployparameter = new Ployparameter();
+        ployparameter.showEmpAnnual(tom);
+        ployparameter.showEmpAnnual(milan);
+        ployparameter.testWork(tom);
+        ployparameter.testWork(milan);
+    }
+    public void showEmpAnnual(Employee e){
+        System.out.println(e.getAnnual());
+    }
+    public void testWork(Employee e){
+        if(e instanceof Worker){
+            ((Worker)e).work();
+        }else if(e instanceof Manger){
+            ((Manger)e).mange();
+        }else{
+            System.out.println("不做处理...");
+        }
+    }
+}
+
+```
+
+千万不要眼高手低。2024.07.28 完成34.945%
 
 - object类
 
-- 断点调试
+  equals:
 
-2024.07.22 完成39.670%
+  ![image-20240728232125668](D:/Blog/source/_posts/杂题结论/image-20240728232125668.png)
+
+  如何重写equals方法：
+
+  ```java
+  public boolean equals(Object anObject) {
+          if (this == anObject) {
+              return true;
+          }
+          if (anObject instanceof String) {
+              String anotherString = (String)anObject;
+              int n = value.length;
+              if (n == anotherString.value.length) {
+                  char v1[] = value;
+                  char v2[] = anotherString.value;
+                  int i = 0;
+                  while (n-- != 0) {
+                      if (v1[i] != v2[i])
+                          return false;
+                      i++;
+                  }
+                  return true;
+              }
+          }
+          return false;
+      }
+  Object 的就是:
+  public boolean qauals(Object anObject){
+      return this == anObject;
+  }
+   public boolean equals(Object obj) {
+          if (obj instanceof Integer) {
+              return value == ((Integer)obj).intValue();
+          }
+          return false;
+      }
+  
+  
+    public boolean equals(Object p){
+          if(this == p)return true;
+          if(p instanceof Person){
+              //向下转型
+              Person q = (Person) p;
+              return this.name.equals(q.name)&&this.age==q.age&&this.gender==q.gender;
+          }
+          return false;
+      }
+  ```
+
+  hashCode:返回该对象的哈希码值，支持此方法是为了提高哈希表的性能。
+
+  > 1)提高具有哈希结构的容器的效率！
+  >
+  > 2)两个引用，如果指向的是同一个对象，则哈希值肯定是一样的！ 
+  >
+  > 3)两个引用，如果指向的是不同对象，则哈希值是不一样的 
+  >
+  > 4)哈希值主要根据地址号来的！， 不能完全将哈希值等价于地址。
+  >
+  > 5)案例演示[HashCode_.java]:obj.hashCode() [测试：A obj1=new A();A obj2=new A();A obj3=obj1] 
+  >
+  > 6)后面在集合，中hashCode如果需要的话，也会重写,在讲解集合时，老韩在说如何重写hashCode()
+  >
+  > ```java
+  >  public class HashCode_{
+  >  public static void main(String[]args){
+  >  AA aa=new AA();
+  >  AA aa2=new AA();
+  >  AA aa3=aa;
+  >  System.out.println("aa.hashCode()="+aa.hashCode());
+  >  System.out.println("aa2.hashCode()="+aa2.hashCode());
+  >  System.out.println("aa3.hashCode()="+aa3.hashCode());
+  >  }
+  >  }
+  >  classAA{}
+  > ```
+  >
+  > 
+
+  toString:
+
+  1)基本介绍 默认返回：全类名(包名加类名）+@+哈希值的十六进制，【查看Object的toString方法】 子类往往重写toString方法，用于返回对象的属性信息 
+
+  ```java
+      public String toString() {
+          return getClass().getName() + "@" + Integer.toHexString(hashCode());
+      }
+  ```
+
+  2)重写toString方法，打印对象或拼接对象时，都会自动调用该对象的toString形式
+
+  案例演示：Monster[name,job, sal] 案例:ToString_.java 
+
+  3）当直接输出一个对象时，toString 方法会被默认的调用, 比如 System.out.println(monster)； 就会默认调用 monster.toString()
+
+  finalize:
+
+  1)当对象被回收时，系统自动调用该对象的finalize方法。子类可以重写该方法，做一些释放资源的操作【演示】
+
+   2)什么时候被回收：当某个对象没有任何引用时，则jvm就认为这个对象是一个垃圾对象，就会使用垃圾回收机制来 销毁该对象，在销毁该对象前，会先调用finalize方法。 
+
+  3)垃圾回收机制的调用，是由系统来决定(即有自己的GC算法),也可以通过System.gc()主动触发垃圾回收机制，测 试：Car[name]
+
+   老韩提示：我们在实际开发中，几乎不会运用finalize,所以更多就是为了应付面试.
+
+  getClass:在 Java 中，`getClass()` 是一个方法，用于获取对象的运行时类。这个方法属于 `Object` 类，因此所有 Java 对象都可以调用它。
+
+  使用 `getClass()` 方法的基本语法如下：
+
+  ```java
+  Class<?> class_name = object.getClass();
+  public class MyClass {
+      public static void main(String[] args) {
+          MyClass obj = new MyClass();
+          Class<?> class_name = obj.getClass();
+  
+          System.out.println(class_name);  // 输出：class MyClass
+      }
+  }
+  ```
+
+  
+
+- 断点调试(debug)
+
+  ![image-20240729224627340](D:/Blog/source/_posts/杂题结论/image-20240729224627340.png)
+
+force step into 进入 alt+shift+f7 or
+
+Debugger java.* 和javax.*
+
+零钱通项目：使用Java 开发 零钱通项目 , 可以完成收益入账，消费，查看明细，退出系统等功能.
+
+化繁为简. 1) 先完成显示菜单，并可以选择 2) 完成零钱通明细. 3) 完成收益入账 4) 消费 5) 退出
+
+```java
+package com.smallcahnge;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Scanner;
+
+public class SmallChangeSys {
+    public static void main(String []args){
+        boolean loop = true;
+        Scanner scanner = new Scanner(System.in);
+        String key="";
+        String details = "-------------零钱通明细----------";
+        double money = 0;
+        double balance = 0;
+        Date date = null;
+        String note;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        do{
+            System.out.println("\n=============零钱通菜单=============");
+            System.out.println("\t\t\t1 零钱通明细");
+            System.out.println("\t\t\t2 收益入账");
+            System.out.println("\t\t\t3 消费");
+            System.out.println("\t\t\t4 退    出");
+            System.out.print("请选择（1-4）： ");
+            key=scanner.next();
+            switch (key){
+                case "1":
+                    System.out.println(details);
+                    break;
+                case "2":
+                    System.out.print("收益入账金额：");
+                    money = scanner.nextDouble();
+                    if(money<=0){
+                        System.out.println("收益入账金额 需要  大于 0");
+                        break;
+                    }
+                    balance+=money;
+                    date = new Date();
+                    details+="\n收益入账\t+"+money+"\t"+sdf.format(date)+"\t"+balance;
+                    break;
+                case "3":
+                    System.out.print("消费金额:");
+                    money =scanner.nextDouble();
+                    if(money<=0||money>balance){
+                        System.out.println("你的消费金额 应该在0-"+balance+"元");
+                        break;
+                    }
+                    System.out.print("消费说明：");
+                    note = scanner.next();
+                    balance-=money;
+                    date=new Date();
+                    details+="\n"+note+"\t-"+money+"\t"+sdf.format(date)+"\t"+balance;
+                    break;
+                case "4":
+                    String choice = "";
+                    while(true){
+                        System.out.println("你确定要退出吗？y/n");
+                        choice = scanner.next();
+                        if("y".equals(choice)||"n".equals(choice)){
+                            break;
+                        }
+                    }
+                    if(choice.equals("y")){
+                    loop=false;
+                    }
+                    break;
+                default:
+                    System.out.println("菜单选择有误,请重新选择");
+            }
+        }while(loop);
+        System.out.println("------退出了零钱通项目------");
+    }
+}
+```
+
+oop类型
+
+编译类型自己可以写，运行类型是运行中可以用。
+
+Integer 在-127-128之间用==是true;
+
+调用父类有参构造隐藏个super（）；
+
+求悟
+
+2024.07.29 完成39.670%
 
 ## 第09章 房屋出租系统(P362 - P373)
+
+分层模式 基本简单的设计模式
+
+房屋租赁程序框架图
+
+1.系统有哪些类/文件，2.明确类与类的调用关系
+
+HouseView.java 1.显示界面2.接受用户的输入3.调用其他类完成对房屋信息的各种操作//界面层
+
+HouseService.java1.响应View的调用2.完成对房屋信息的各种操作（crud增删改查）//业务层
+
+House.java 1.一个House对象表示一个房屋信息//实体类domain/model
+
+HouseRentApp.java 创建对象，调用显示 主程序
+
+工具类 提供服务
+
+<img src="D:/Blog/source/_posts/杂题结论/image-20240731214212745.png" alt="image-20240731214212745" style="zoom: 200%;" />
+
+
+
+实现功能的三部曲 [明确完成功能->思路分析->代码实现]
+
+当一个方法是static时，可以通过类名调用
+
+业精于勤，荒于嬉，行成于思，毁于随。
+
+2024.07.31 完成40.989%
 
